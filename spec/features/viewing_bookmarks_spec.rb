@@ -1,3 +1,5 @@
+require 'spec_helper'
+
 feature 'viewing bookmarks' do
   scenario 'visiting the index page' do
     visit '/'
