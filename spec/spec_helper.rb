@@ -2,7 +2,17 @@ require_relative './setup_test_database'
 
 ENV['RACK_ENV'] = 'test'
 ENV['ENVIRONMENT'] = 'test'
-
+# require 'rake'
+#
+# # Load the Rakefile
+# Rake.application.load_rakefile
+#
+# # Then, in the RSpec config...
+# RSpec.configure do |config|
+#   config.before(:each) do
+#     Rake::Task['setup'].execute
+#   end
+# end
 RSpec.configure do |config|
   config.before(:each) do
     setup_test_database

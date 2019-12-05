@@ -11,8 +11,8 @@ feature 'Adding a new bookmark' do
   end
   scenario 'The bookmark must be a valid URL' do
     visit('/bookmarks/new')
-    fill_in('title', with: 'not a real bookmark')
     fill_in('url', with: 'not a real bookmark')
+    fill_in('title', with: 'not a real bookmark')
     click_button('Submit')
 
     expect(page).not_to have_content "not a real bookmark"

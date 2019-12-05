@@ -1,12 +1,13 @@
 require_relative 'database_connection'
 require 'uri'
-
+require_relative 'comments'
+require_relative 'tag'
 class Bookmark
 
   def self.all
-    result = DatabaseConnection.query("SELECT * FROM bookmarks;")
-    result.map do |bookmark|
-      Bookmark.new(url: bookmark['url'], title: bookmark['title'], id: bookmark['id'], )
+    bookmarks = DatabaseConnection.query('SELECT * FROM bookmarks;')
+    bookmarks.map do |bookmark|
+      Bookmark.new(url: bookmark['url'], title: bookmark['title'], id: bookmark['id'])
     end
   end
 
@@ -30,6 +31,21 @@ class Bookmark
     Bookmark.new(id: result[0]['id'], title: result[0]['title'], url: result[0]['url'])
   end
 
+  def comments(comment_class = Comment)
+    comment_class.where(bookmark_id: id)
+  end
+
+  def tags(tag_class = Tag)
+    tag_class.where(bookmark_id: id)
+  end
+
+  def self.where(tag_id:)
+    result = DatabaseConnection.query("SELECT id, url, title FROM bookmarks_tags INNER JOIN bookmarks ON bookmarks.id = bookmarks_tags.bookmark_id WHERE tag_id = #{tag_id};")
+    result.map do |bookmark|
+     Bookmark.new(id: bookmark['id'], title: bookmark['title'], url: bookmark['url'])
+    end
+   end
+
   attr_reader :id, :title, :url
 
   def initialize(id:, title:, url:)
@@ -41,7 +57,7 @@ class Bookmark
   private
 
   def self.is_url?(url)
-    url =~ /\A#{URI::regexp(['http', 'https'])}\z/
+    url =~ URI::DEFAULT_PARSER.regexp[:ABS_URI]
   end
 
 end
